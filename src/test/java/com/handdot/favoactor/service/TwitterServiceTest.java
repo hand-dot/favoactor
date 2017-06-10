@@ -2,6 +2,7 @@ package com.handdot.favoactor.service;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,12 @@ import twitter4j.User;
 public class TwitterServiceTest {
 	@Autowired
 	TwitterService twitterService;
+
+	/**
+	 * スクリーンネームからUserIdを取得するためのテスト
+	 * @throws TwitterException
+	 */
+	@Ignore
 	@Test
 	public void getUserIdFromScreenNameANDgetUserTimeline() throws TwitterException {
 		String screenName = "";
@@ -28,6 +35,12 @@ public class TwitterServiceTest {
 	        System.out.println(status.getUser().getName() + ":" +
 	                           status.getText());
 	    }
+	}
+
+	@Ignore
+	@Test
+	public void getAuthorizationURL() throws TwitterException {
+		twitterService.getAuthorizationURL();
 	}
 
 }

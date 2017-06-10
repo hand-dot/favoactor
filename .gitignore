@@ -24,4 +24,5 @@ nbdist/
 .nb-gradle/
 
 ### favoactor ###
+src/main/resources/application.yml
 src/main/resources/twitter4j.properties
