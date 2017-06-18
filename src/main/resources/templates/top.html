@@ -5,8 +5,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p>oauth_token</p>
-<p th:text="${oauth_token}" /> 
+<p>start_date</p>
+<p th:text="${#dates.format(start_date, 'yyyy/MM/dd HH:mm:ss')}" /> 
+<p>end_date</p>
+<p th:text="${#dates.format(end_date, 'yyyy/MM/dd HH:mm:ss')}" /> 
+<p>---------------------------------</p>
+<p>oauth_verifier</p>
+<p th:text="${oauth_verifier}" /> 
 <p>oauth_verifier</p>
 <p th:text="${oauth_verifier}" /> 
 </body>
