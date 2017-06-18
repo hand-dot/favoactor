@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.handdot.favoactor.bean.TargetStatusBean;
 import com.handdot.favoactor.bean.UserBean;
 
 import twitter4j.ResponseList;
@@ -71,11 +72,22 @@ public class TwitterService {
 			public void run() {
 				Date now = new Date();
 				if (now.after(endDate)) {// 今の時間がライブの終了時間よりも後だった場合、処理を止める
+					System.out.println("ツイートの監視を終了します");
 					service.shutdown();
 				}
 				try {
+					// 自分のツイートを最新20件取得して1件づつ処理をする
 					for (Status status : user.getTwitter().getUserTimeline()) {
-						System.out.println(status);
+
+						if (status.getCreatedAt().after(startDate)) {// ライブの開始時間よりもあとのツイート
+							TargetStatusBean target= new TargetStatusBean(status.getId(),status.getFavoriteCount(),status.getRetweetCount());
+							int increaseFavoriteCount = user.getLiveBean().getIncreaseFavoriteCount(target);
+							if(0<increaseFavoriteCount){
+								System.out.println(target.getId()+"/"+status.getText()+"は"+increaseFavoriteCount+"件新規にお気に入り登録されました。");
+							}else{
+								System.out.println("お気に入り件数に増加はありませんでした。");
+							}
+						}
 					}
 				} catch (TwitterException e) {
 					e.printStackTrace();
