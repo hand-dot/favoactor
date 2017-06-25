@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.handdot.favoactor.bean.LiveBean;
 import com.handdot.favoactor.bean.UserBean;
-import com.handdot.favoactor.service.TwitterService;
+import com.handdot.favoactor.service.impl.TwitterService;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

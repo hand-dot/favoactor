@@ -7,14 +7,14 @@ import java.util.Map;
 import org.apache.commons.lang.time.DateUtils;
 
 /**
- * 
+ *
  * @author hand-dot
  *
  */
 public class LiveBean {
 
 	// ライブの時間
-	private final int LIVE_LIMIT_MINUTES = 2;
+	private final int LIVE_LIMIT_MINUTES = 3;
 
 	// ライブの開始時間
 	private Date startDate;
@@ -48,7 +48,7 @@ public class LiveBean {
 
 	/**
 	 * お気に入り数の増加分を返します
-	 * 
+	 *
 	 * @param targetStatusBean
 	 * @return
 	 */
@@ -57,7 +57,7 @@ public class LiveBean {
 			// 前回とのお気に入りの差分
 			int result = targetStatusBean.getFavoriteCount()
 					- this.targetStatusBeanMap.get(targetStatusBean.getId()).getFavoriteCount();
-			
+
 			// 前回との差分がマイナスだった場合、すでに持っているツイートを更新せず、0を返却する
 			if (result < 0) {
 				return 0;

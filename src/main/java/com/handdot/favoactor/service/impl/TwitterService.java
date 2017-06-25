@@ -1,17 +1,18 @@
-package com.handdot.favoactor.service;
+package com.handdot.favoactor.service.impl;
 
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.handdot.favoactor.bean.TargetStatusBean;
 import com.handdot.favoactor.bean.UserBean;
+import com.handdot.favoactor.service.ifs.CommandLineService;
 
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -21,12 +22,16 @@ import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * ツイッターの処理を行うサービスです
- * 
+ *
  * @author hand-dot
  *
  */
 @Service
 public class TwitterService {
+
+	@Autowired
+	private CommandLineService commandLineService;
+
 	@Value("${oauth.consumerKey}")
 	private String consumerKey;
 
@@ -35,7 +40,7 @@ public class TwitterService {
 
 	/**
 	 * 新しいインスタンスを作成します。
-	 * 
+	 *
 	 * @return ツイッターインスタンス
 	 */
 	public Twitter createNewTwitter() {
@@ -47,8 +52,8 @@ public class TwitterService {
 	}
 
 	/**
-	 * ツイートを制限時間内監視します。
-	 * 
+	 * ツイートを制限時間内監視し、お気に入りに増加があればコマンドラインサービスを実行します。
+	 *
 	 * @param user
 	 * @throws InterruptedException
 	 */
@@ -59,6 +64,7 @@ public class TwitterService {
 		}
 		// ライブ中のフラグを立てる
 		user.setLiving(true);
+		System.out.println("ツイートの監視を開始します");
 
 		// ライブの開始時間と終了時間
 		Date endDate = user.getLiveBean().getEndDate();
@@ -80,11 +86,14 @@ public class TwitterService {
 					for (Status status : user.getTwitter().getUserTimeline()) {
 
 						if (status.getCreatedAt().after(startDate)) {// ライブの開始時間よりもあとのツイート
-							TargetStatusBean target= new TargetStatusBean(status.getId(),status.getFavoriteCount(),status.getRetweetCount());
+							TargetStatusBean target = new TargetStatusBean(status.getId(), status.getFavoriteCount(),
+									status.getRetweetCount());
 							int increaseFavoriteCount = user.getLiveBean().getIncreaseFavoriteCount(target);
-							if(0<increaseFavoriteCount){
-								System.out.println(target.getId()+"/"+status.getText()+"は"+increaseFavoriteCount+"件新規にお気に入り登録されました。");
-							}else{
+							if (0 < increaseFavoriteCount) {// お気に入りの数が増加した場合
+								System.out.println(target.getId() + "/" + status.getText() + "は" + increaseFavoriteCount
+										+ "件新規にお気に入り登録されました。");
+								commandLineService.exceNodeLed();
+							} else {
 								System.out.println("お気に入り件数に増加はありませんでした。");
 							}
 						}
