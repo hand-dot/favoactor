@@ -11,5 +11,6 @@ board.on('ready', function() {
   setTimeout(function(){
   	led.off();
     console.log('OFF!');
+    process.exit();
   },1000);
 });
