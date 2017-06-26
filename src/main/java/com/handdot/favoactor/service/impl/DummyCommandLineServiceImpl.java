@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
@@ -14,6 +13,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.handdot.favoactor.service.ifs.CommandLineService;
+import com.handdot.favoactor.util.FileUtil;
 
 /**
  * 主にnodejsの起動をしスクリプトを実行します。
@@ -28,19 +28,17 @@ public class DummyCommandLineServiceImpl implements CommandLineService {
 	@Autowired
 	ResourceLoader resourceLoader;
 
-	final String filepath = "scripts/dummy.js";
+	final String fileName = "dummy.js";
 
-	File tempFile;
+	final String scriptsPath = "scripts";
 
 	public void exceNodeLed() {
 		try {
+			File tempDir = new File(System.getProperty("java.io.tmpdir"), "favoactor_development");
 
-			if (tempFile == null) {
-				tempFile = File.createTempFile("dummy", ".js");
-
-				Resource resource = resourceLoader.getResource("classpath:" + filepath);
-				FileUtils.copyInputStreamToFile(resource.getInputStream(), tempFile);
-			}
+			Resource resource = resourceLoader.getResource("classpath:" + scriptsPath);
+			// scriptsフォルダがない場合は作成する
+			FileUtil.ifExistsCopyDir(new File(resource.getURI()), tempDir);
 
 			// Executor
 			DefaultExecutor executor = new DefaultExecutor();
@@ -51,7 +49,7 @@ public class DummyCommandLineServiceImpl implements CommandLineService {
 			// 正常終了の場合に返される値
 			executor.setExitValue(0);
 
-			CommandLine commandLine = CommandLine.parse("node " + tempFile.getAbsolutePath());
+			CommandLine commandLine = CommandLine.parse("node " + tempDir.getAbsolutePath() + "/" + fileName);
 			// コマンドの実行
 			executor.execute(commandLine, resultHandler);
 		} catch (IOException e) {
