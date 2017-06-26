@@ -30,15 +30,21 @@ public class DummyCommandLineServiceImpl implements CommandLineService {
 
 	final String fileName = "dummy.js";
 
-	final String scriptsPath = "scripts";
+	final String scriptsPath = "scripts/";
 
 	public void exceNodeLed() {
 		try {
 			File tempDir = new File(System.getProperty("java.io.tmpdir"), "favoactor_development");
 
 			Resource resource = resourceLoader.getResource("classpath:" + scriptsPath);
+
 			// scriptsフォルダがない場合は作成する
-			FileUtil.ifExistsCopyDir(new File(resource.getURI()), tempDir);
+			System.out.println(resource);
+			System.out.println(resource.getFile());
+			System.out.println(resource.getURI());
+			System.out.println(resource.getURI().getPath());
+			// https://stackoverflow.com/questions/39127662/java-load-folder-from-jar
+			FileUtil.ifExistsCopyDir(resource.getFile(), tempDir);
 
 			// Executor
 			DefaultExecutor executor = new DefaultExecutor();
