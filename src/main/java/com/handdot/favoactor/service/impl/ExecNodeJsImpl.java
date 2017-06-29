@@ -70,7 +70,7 @@ public class ExecNodeJsImpl implements ExecNodeJsService {
 		System.out.println("ExecNodeJsService#setUp Done!!");
 	}
 
-	public void blinkLed() {
+	public void execute() {
 		try {
 			// コマンドの実行
 			executor.execute(nodeLedJs, resultHandler);

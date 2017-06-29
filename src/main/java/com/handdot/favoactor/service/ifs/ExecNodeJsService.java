@@ -10,7 +10,7 @@ public interface ExecNodeJsService {
 	 */
 	public void setUp();
 	/**
-	 * LEDを光らせるスクリプトを実行します。
+	 * executorがスクリプトを実行します。
 	 */
-	public void blinkLed();
+	public void execute();
 }

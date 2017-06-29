@@ -49,7 +49,7 @@ public class DummyExecNodeJsImpl implements ExecNodeJsService {
 		System.out.println("ExecNodeJsService#setUp Done!!");
 	}
 
-	public void blinkLed() {
+	public void execute() {
 		try {
 			// Executor
 			DefaultExecutor executor = new DefaultExecutor();

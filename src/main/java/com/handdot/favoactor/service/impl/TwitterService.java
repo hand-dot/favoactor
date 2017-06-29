@@ -94,7 +94,7 @@ public class TwitterService {
 							if (0 < increaseFavoriteCount) {// お気に入りの数が増加した場合
 								System.out.println(target.getId() + "/" + status.getText() + "は" + increaseFavoriteCount
 										+ "件新規にお気に入り登録されました。");
-								execNodeJsService.blinkLed();
+								execNodeJsService.execute();
 							} else {
 								System.out.println("お気に入り件数に増加はありませんでした。");
 							}

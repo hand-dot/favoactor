@@ -18,7 +18,7 @@ public class DummyExecNodeJsImplTest {
 	@Test
 	public void test() {
 		execNodeJs.setUp();
-		execNodeJs.blinkLed();
+		execNodeJs.execute();
 	}
 
 }
