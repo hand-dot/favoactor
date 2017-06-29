@@ -1,7 +1,8 @@
 var raspi = require('raspi-io');
 var five = require('johnny-five');
 var board = new five.Board({
-  io: new raspi()
+  io: new raspi(),
+  repl: false
 });
 
 board.on('ready', function() {

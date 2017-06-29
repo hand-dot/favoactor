@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.handdot.favoactor.bean.TargetStatusBean;
 import com.handdot.favoactor.bean.UserBean;
-import com.handdot.favoactor.service.ifs.CommandLineService;
+import com.handdot.favoactor.service.ifs.ExecNodeJsService;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -30,7 +30,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterService {
 
 	@Autowired
-	private CommandLineService commandLineService;
+	private ExecNodeJsService execNodeJsService;
 
 	@Value("${oauth.consumerKey}")
 	private String consumerKey;
@@ -62,6 +62,8 @@ public class TwitterService {
 		if (!user.isCertificated()) {
 			throw new IllegalStateException();
 		}
+
+		execNodeJsService.setUp();
 		// ライブ中のフラグを立てる
 		user.setLiving(true);
 		System.out.println("ツイートの監視を開始します");
@@ -92,7 +94,7 @@ public class TwitterService {
 							if (0 < increaseFavoriteCount) {// お気に入りの数が増加した場合
 								System.out.println(target.getId() + "/" + status.getText() + "は" + increaseFavoriteCount
 										+ "件新規にお気に入り登録されました。");
-								commandLineService.exceNodeLed();
+								execNodeJsService.blinkLed();
 							} else {
 								System.out.println("お気に入り件数に増加はありませんでした。");
 							}

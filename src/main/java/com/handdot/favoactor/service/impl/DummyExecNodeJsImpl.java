@@ -6,14 +6,14 @@ import java.io.IOException;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import com.handdot.favoactor.service.ifs.CommandLineService;
-import com.handdot.favoactor.util.FileUtil;
+import com.handdot.favoactor.service.ifs.ExecNodeJsService;
 
 /**
  * 主にnodejsの起動をしスクリプトを実行します。
@@ -22,24 +22,35 @@ import com.handdot.favoactor.util.FileUtil;
  *
  */
 @Service
-@Profile("production")
-public class CommandLineServiceImpl implements CommandLineService {
+@Profile("development")
+public class DummyExecNodeJsImpl implements ExecNodeJsService {
 
 	@Autowired
 	ResourceLoader resourceLoader;
 
-	final String fileName = "led.js";
+	final String fileName = "dummy.js";
 
-	final String scriptsPath = "scripts";
+	File scriptsDir = new File(System.getProperty("java.io.tmpdir"), "favoactor_scripts");
 
-	public void exceNodeLed() {
+	@Override
+	public void setUp() {
+		System.out.println("ExecNodeJsService#setUp Please wait...");
 		try {
-			File tempDir = new File(System.getProperty("java.io.tmpdir"), "favoactor_production");
+			if (scriptsDir.exists()) {
+				return;
+			}
+			scriptsDir.mkdir();
+			Resource resource = resourceLoader.getResource("classpath:scripts");
+			FileUtils.copyDirectory(resource.getFile(), scriptsDir);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		System.out.println("ExecNodeJsService#setUp Done!!");
+	}
 
-			Resource resource = resourceLoader.getResource("classpath:" + scriptsPath);
-			// scriptsフォルダがない場合は作成する
-			FileUtil.ifExistsCopyDir(new File(resource.getURI()), tempDir);
-
+	public void blinkLed() {
+		try {
 			// Executor
 			DefaultExecutor executor = new DefaultExecutor();
 
@@ -49,9 +60,11 @@ public class CommandLineServiceImpl implements CommandLineService {
 			// 正常終了の場合に返される値
 			executor.setExitValue(0);
 
-			CommandLine commandLine = CommandLine.parse("node " + tempDir.getAbsolutePath() + "/" + fileName);
+			CommandLine commandLine = CommandLine.parse("node " + scriptsDir.getAbsolutePath() + "/" + fileName);
 			// コマンドの実行
 			executor.execute(commandLine, resultHandler);
+			//デバッグ用の待ち処理
+			// resultHandler.waitFor();
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
